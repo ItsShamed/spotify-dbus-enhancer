@@ -36,7 +36,7 @@
           in
           {
             formatter = pkgs.nixpkgs-fmt;
-            pkgs = {
+            packages = {
               spotify-notifix = pkgs.stdenv.mkDerivation {
                 name = "spotify-notifix";
                 buildInputs = [
