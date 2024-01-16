@@ -1,22 +1,62 @@
 {
   description = "Spotify DBus Notification Enhancer";
   inputs = {
+    systems.url = "github:nix-systems/default-linux";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    futils = {
+      url = "github:numtide/flake-utils";
+      inputs.systems.follows = "systems";
+    };
+    flake-compat = {
+      url = "github:edolstra/flake-compat";
+      flake = false;
+    };
   };
 
   outputs =
     { self
     , nixpkgs
+    , futils
+    , flake-compat
     , ...
     } @ inputs:
-    let
-      system = "x86_64-linux";
-      pkgs = import nixpkgs {
-        inherit system;
-        config = { allowUnfree = true; };
-      };
-    in
-    {
-      formatter.${system} = pkgs.nixpkgs-fmt;
-    };
+    futils.lib.eachDefaultSystem (system:
+      let
+        pkgs = import nixpkgs {
+          inherit system;
+          config = { allowUnfree = true; };
+        };
+        python = pkgs.python3.withPackages (ps: with ps; [
+          pygobject3
+          dbus-object
+        ]);
+      in
+      {
+        formatter = pkgs.nixpkgs-fmt;
+        pkgs = {
+          spotify-notifix = pkgs.stdenv.mkDerivation {
+            name = "spotify-notifix";
+            buildInputs = [
+              pkgs.gobject-introspection
+            ];
+            propagatedBuildInputs = [
+              python
+            ];
+            dontUnpack = true;
+            installPhase = "install -Dm755 ${./spotify-notifix.py} $out/bin/spotify-notifix";
+          };
+        };
+        devShells = {
+          python = pkgs.mkShell rec {
+            buildInputs = [
+              pkgs.gobject-introspection
+            ];
+            propagatedBuildInputs = [
+              python
+            ];
+          };
+          default = self.devShells.${system}.python;
+        };
+      }
+    );
 }
