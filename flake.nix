@@ -28,7 +28,7 @@
         };
         python = pkgs.python3.withPackages (ps: with ps; [
           pygobject3
-          dbus-object
+          dbus-python
         ]);
       in
       {
