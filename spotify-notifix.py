@@ -5,7 +5,6 @@ import dbus
 from dbus.mainloop.glib import DBusGMainLoop
 
 notifier = None
-mpris = None
 
 def get_arg(message, n):
     arg_list = message.get_args_list()
@@ -47,6 +46,7 @@ def edit_notify(bus, message):
     body = ""
 
     try:
+        mpris = get_mpris_object(bus)
         player = get_player(mpris)
         meta = get_metadata(player)
         body = f"{', '.join(meta['xesam:artist'])} - {meta['xesam:title']}\n"
@@ -71,7 +71,6 @@ DBusGMainLoop(set_as_default=True)
 bus = dbus.SessionBus()
 bus.add_match_string_non_blocking("eavesdrop=true, interface='org.freedesktop.Notifications', member='Notify'")
 bus.add_message_filter(notifications)
-mpris = get_mpris_object(bus)
 notifier = create_notifier(bus)
 
 mainloop = gi.repository.GLib.MainLoop()
