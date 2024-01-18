@@ -39,7 +39,7 @@ the script to your packages.
 
     spotify-notifyx = {
       url = "github:ItsShamed/spotify-dbus-enhancer/master";
-      nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
