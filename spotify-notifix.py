@@ -4,8 +4,6 @@ import gi.repository.GLib
 import dbus
 from dbus.mainloop.glib import DBusGMainLoop
 
-notifier = None
-
 def get_arg(message, n):
     arg_list = message.get_args_list()
     if len(arg_list) >= n + 1:
@@ -46,6 +44,7 @@ def edit_notify(bus, message):
     body = ""
 
     try:
+        notifier = create_notifier(bus)
         mpris = get_mpris_object(bus)
         player = get_player(mpris)
         meta = get_metadata(player)
@@ -71,7 +70,6 @@ DBusGMainLoop(set_as_default=True)
 bus = dbus.SessionBus()
 bus.add_match_string_non_blocking("eavesdrop=true, interface='org.freedesktop.Notifications', member='Notify'")
 bus.add_message_filter(notifications)
-notifier = create_notifier(bus)
 
 mainloop = gi.repository.GLib.MainLoop()
 print("Running...")
