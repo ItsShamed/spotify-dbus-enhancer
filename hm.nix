@@ -19,7 +19,7 @@ script_flake:
     };
 
     Install = {
-      WantedBy = "graphical-session.target";
+      WantedBy = [ "graphical-session.target" ];
     };
   };
 }
