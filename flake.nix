@@ -66,6 +66,7 @@
         );
       agnosticOuts = {
         homeManagerModules.spotify-dbus-enhancer = import ./hm.nix;
+        homeManagerModules.default = self.homeManagerModules.spotify-dbus-enhancer;
       };
     in
     lib.recursiveUpdate linuxOuts agnosticOuts;
