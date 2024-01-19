@@ -48,9 +48,9 @@
                 dontUnpack = true;
                 installPhase = "install -Dm755 ${./spotify-notifix.py} $out/bin/spotify-notifix";
               };
-              default = self.pkgs.${system}.spotify-notifix;
+              default = self.packages.${system}.spotify-notifix;
             };
-            defaultPackage = self.pkgs.${system}.default;
+            defaultPackage = self.packages.${system}.default;
             devShells = {
               python = pkgs.mkShell rec {
                 buildInputs = [
