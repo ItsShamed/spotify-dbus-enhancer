@@ -15,7 +15,7 @@ script_flake:
       RestartSec = "5s";
       Type = "simple";
       StandardOutput = "journal";
-      ExecStart = "${script-pkg.defaultPackage.${pkgs.system}}/bin/spotify-notifix";
+      ExecStart = "${script_flake.defaultPackage.${pkgs.system}}/bin/spotify-notifix";
     };
 
     Install = {
