@@ -17,7 +17,6 @@
     { self
     , nixpkgs
     , futils
-    , flake-compat
     , ...
     } @ inputs:
     let
@@ -52,7 +51,7 @@
             };
             defaultPackage = self.packages.${system}.default;
             devShells = {
-              python = pkgs.mkShell rec {
+              python = pkgs.mkShell {
                 buildInputs = [
                   pkgs.gobject-introspection
                 ];
