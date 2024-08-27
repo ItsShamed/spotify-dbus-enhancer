@@ -39,6 +39,9 @@
             packages = {
               spotify-notifix = pkgs.stdenv.mkDerivation {
                 name = "spotify-notifix";
+                nativeBuildInputs = [
+                  pkgs.makeWrapper
+                ];
                 buildInputs = [
                   pkgs.gobject-introspection
                 ];
@@ -47,7 +50,14 @@
                   pkgs.gobject-introspection
                 ];
                 dontUnpack = true;
-                installPhase = "install -Dm755 ${./spotify-notifix.py} $out/bin/spotify-notifix";
+                installPhase = ''
+                  runHook preInstall
+
+                  makeWrapper ${python}/bin/python $out/bin/spotify-notifix \
+                    --add-flags "${./spotify-notifix.py}"
+
+                  runHook postInstall
+                '';
               };
               default = self.packages.${system}.spotify-notifix;
             };
