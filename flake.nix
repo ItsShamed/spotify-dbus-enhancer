@@ -30,6 +30,7 @@
             };
             python = pkgs.python3.withPackages (ps: with ps; [
               pygobject3
+              pygobject-stubs
               dbus-python
             ]);
           in
@@ -43,6 +44,7 @@
                 ];
                 propagatedBuildInputs = [
                   python
+                  pkgs.gobject-introspection
                 ];
                 dontUnpack = true;
                 installPhase = "install -Dm755 ${./spotify-notifix.py} $out/bin/spotify-notifix";
