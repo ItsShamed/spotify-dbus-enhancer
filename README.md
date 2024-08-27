@@ -54,7 +54,7 @@ the script to your packages.
 
       modules = [
         # Add the module or...
-        (spotify-notifyx.homeManagerModules.default spotify-notifyx)
+        spotify-notifyx.homeManagerModules.default
       ];
     };
   };
@@ -85,7 +85,7 @@ in
 {
   # Import module
   imports = [
-    (spotify-notifix.homeManagerModules.default spotify-notifix)
+    spotify-notifix.homeManagerModules.default
   ];
 
   # Or add package

@@ -64,7 +64,7 @@
           }
         );
       agnosticOuts = {
-        homeManagerModules.spotify-dbus-enhancer = import ./hm.nix;
+        homeManagerModules.spotify-dbus-enhancer = import ./hm.nix self;
         homeManagerModules.default = self.homeManagerModules.spotify-dbus-enhancer;
       };
     in
