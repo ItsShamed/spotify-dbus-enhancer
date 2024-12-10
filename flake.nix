@@ -2,7 +2,7 @@
   description = "Spotify DBus Notification Enhancer";
   inputs = {
     systems.url = "github:nix-systems/default-linux";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
     futils = {
       url = "github:numtide/flake-utils";
       inputs.systems.follows = "systems";
@@ -11,12 +11,15 @@
       url = "github:edolstra/flake-compat";
       flake = false;
     };
+    devenv.url = "github:cachix/devenv";
   };
 
   outputs =
     { self
     , nixpkgs
     , futils
+
+    , devenv
     , ...
     } @ inputs:
     let
@@ -28,50 +31,49 @@
               inherit system;
               config = { allowUnfree = true; };
             };
-            python = pkgs.python3.withPackages (ps: with ps; [
-              pygobject3
-              pygobject-stubs
-              dbus-python
-            ]);
           in
           {
             formatter = pkgs.nixpkgs-fmt;
             packages = {
               spotify-notifix = pkgs.stdenv.mkDerivation {
                 name = "spotify-notifix";
-                nativeBuildInputs = [
-                  pkgs.makeWrapper
+                src = self;
+                nativeBuildInputs = with pkgs; [
+                  meson
+                  ninja
+                  pkg-config
+                  vala
                 ];
-                buildInputs = [
-                  pkgs.gobject-introspection
+
+                buildInputs = with pkgs; [
+                  dbus
+                  glib
+                  gobject-introspection
                 ];
-                propagatedBuildInputs = [
-                  python
-                  pkgs.gobject-introspection
+
+                propagatedBuildInputs = with pkgs; [
+                  gobject-introspection
                 ];
-                dontUnpack = true;
+
                 installPhase = ''
                   runHook preInstall
-
-                  makeWrapper ${python}/bin/python $out/bin/spotify-notifix \
-                    --add-flags "${./spotify-notifix.py}"
 
                   runHook postInstall
                 '';
               };
+              devenv-up = self.devShells.${system}.default.config.procfileScript;
+              devenv-test = self.devShells.${system}.default.config.test;
               default = self.packages.${system}.spotify-notifix;
             };
             defaultPackage = self.packages.${system}.default;
             devShells = {
-              python = pkgs.mkShell {
-                buildInputs = [
-                  pkgs.gobject-introspection
-                ];
-                propagatedBuildInputs = [
-                  python
+              vala = devenv.lib.mkShell {
+                inherit inputs pkgs;
+                modules = [
+                  ./devenv.nix
                 ];
               };
-              default = self.devShells.${system}.python;
+              default = self.devShells.${system}.vala;
             };
           }
         );
