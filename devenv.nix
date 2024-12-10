@@ -8,7 +8,6 @@
     ninja
     pkg-config
     dbus
-    dbus-glib
     glib
     gobject-introspection
   ];
