@@ -1,11 +1,22 @@
-namespace SpotifyHook
+using SpotifyHook;
+
+static void main()
 {
-    public class Program : GLib.Object
-    {
-        public static int main(string[] args)
+    MainLoop loop = new MainLoop();
+    var listener = new BasicMessageListener("eavesdrop=true");
+    info("Hello world!");
+    listener.start.begin(null, (obj, res) => {
+        try
         {
-            stdout.puts("Hello world");
-            return 0;
+            listener.start.end(res);
+            info("Listener started");
         }
-    }
+        catch (IOError e)
+        {
+            loop.quit();
+            error(@"Failed to start listener: %e.message");
+        }
+    });
+    info("Running main loop");
+    loop.run();
 }
