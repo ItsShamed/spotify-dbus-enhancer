@@ -3,7 +3,7 @@ using SpotifyHook;
 static void main()
 {
     MainLoop loop = new MainLoop();
-    var listener = new BasicMessageListener("eavesdrop=true");
+    var listener = new BasicNotificationListener("Spotify");
     info("Hello world!");
     listener.start.begin(null, (obj, res) => {
         try

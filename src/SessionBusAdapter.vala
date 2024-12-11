@@ -7,7 +7,6 @@ namespace SpotifyHook
         private const int max_retries = 10;
         private Cancellable? m_cancellable;
         private DBusConnection m_connection;
-        private uint m_watcherId;
 
         protected abstract void SetupConnection(DBusConnection connection);
         protected virtual void TeardownConnection(DBusConnection connection)
