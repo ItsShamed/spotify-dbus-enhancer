@@ -54,6 +54,15 @@
                 propagatedBuildInputs = with pkgs; [
                   gobject-introspection
                 ];
+
+                meta = with lib; {
+                  description = "Daemon that enhance Spotify notifications";
+                  homepage = "https://github.com/ItsShamed/spotify-dbus-enhancer";
+                  license = licenses.mit;
+                  maintainers = [ ];
+                  mainProgram = "spotify-notifix";
+                  platforms = platforms.unix;
+                };
               };
               devenv-up = self.devShells.${system}.default.config.procfileScript;
               devenv-test = self.devShells.${system}.default.config.test;
