@@ -28,25 +28,16 @@ namespace SpotifyHook
             return null;
         }
 
-        try
-        {
-            NotifyCall call = {
-                AppName: VariantUtils.GetChildString(variant, 0),
-                ReplacesId: VariantUtils.GetChildUint32(variant, 1),
-                AppIcon: VariantUtils.GetChildString(variant, 2),
-                Summary: VariantUtils.GetChildString(variant, 3),
-                Body: VariantUtils.GetChildString(variant, 4),
-                Actions: VariantUtils.GetChildStrv(variant, 5),
-                Hints: variant.get_child_value(6),
-                ExpireTimeout: VariantUtils.GetChildInt32(variant, 7)
-            };
-            return call;
-        }
-        catch(Error e)
-        {
-            warning("Failed to deserialize Notify call: (%s) %s",
-                e.domain.to_string(), e.message);
-            return null;
-        }
+        NotifyCall call = {
+            AppName: VariantUtils.GetChildString(variant, 0),
+            ReplacesId: VariantUtils.GetChildUint32(variant, 1),
+            AppIcon: VariantUtils.GetChildString(variant, 2),
+            Summary: VariantUtils.GetChildString(variant, 3),
+            Body: VariantUtils.GetChildString(variant, 4),
+            Actions: VariantUtils.GetChildStrv(variant, 5),
+            Hints: variant.get_child_value(6),
+            ExpireTimeout: VariantUtils.GetChildInt32(variant, 7)
+        };
+        return call;
     }
 }

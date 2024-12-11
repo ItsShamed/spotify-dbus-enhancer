@@ -40,23 +40,18 @@ namespace SpotifyHook
                 {
                     debug("Trying to get DBus session bus connection...");
                     connection = yield Bus.get(BusType.SESSION, cancellable);
+                    if (connection != null)
+                        break;
                 }
                 catch (IOError e)
                 {
                     lastError = e;
                     warning("Failed to get DBus session bus (try %d): %s\n", i,
                         e.message);
-                    continue;
                 }
             }
 
-            if (connection == null)
-            {
-                error("Failed to get DBus session bus (retried %d times)",
-                    max_retries);
-                if (lastError != null)
-                    throw lastError;
-            }
+            assert_nonnull(connection);
 
             debug("Got a session bus!");
             debug("GUID: %s", connection.guid);
