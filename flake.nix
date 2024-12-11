@@ -34,6 +34,12 @@
           in
           {
             formatter = pkgs.nixpkgs-fmt;
+            apps = {
+              spotify-notifix = futils.lib.mkApp {
+                drv = self.packages.${system}.spotify-notifix;
+              };
+              default = self.apps.${system}.spotify-notifix;
+            };
             packages = {
               spotify-notifix = pkgs.stdenv.mkDerivation {
                 name = "spotify-notifix";
