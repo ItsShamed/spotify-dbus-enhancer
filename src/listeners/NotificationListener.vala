@@ -1,6 +1,7 @@
 using GLib;
+using SpotifyHook.Domain;
 
-namespace SpotifyHook
+namespace SpotifyHook.Listeners
 {
     public abstract class NotificationListener : MessageListener
     {
@@ -8,31 +9,38 @@ namespace SpotifyHook
 
         protected NotificationListener(string appName)
         {
-            base("eavesdrop=true, interface='org.freedesktop.Notifications', member='Notify'");
+            base("eavesdrop=true,interface='org.freedesktop.Notifications',member='Notify'");
             m_appName = appName;
         }
 
-        protected abstract void OnNotification(
+        protected abstract async void OnNotification(
             DBusConnection connection, NotifyCall parameters,
             owned DBusMessage rawMessage);
 
         protected override DBusMessage? OnMessage(DBusConnection connection,
             owned DBusMessage message, bool incoming)
         {
-            if (message.get_message_type() != DBusMessageType.METHOD_CALL)
+            if (!incoming)
             {
-                if (message.get_message_type() == DBusMessageType.ERROR)
-                {
-                    warning("Received error:\n%s", message.print(2));
-                }
-                else
-                {
-                    debug("Received message of type '%s' instead of '%s', discarding.",
-                            message.get_message_type().to_string(),
-                            DBusMessageType.METHOD_CALL.to_string());
-                }
-                return null;
+                debug("Discarding outgoing message");
+                return message;
             }
+            if (message.get_interface() != "org.freedesktop.Notifications" ||
+                message.get_member() != "Notify")
+            {
+                debug("Received message for member '%s' of interface '%s'",
+                    message.get_member(),
+                    message.get_interface());
+                switch (message.get_message_type())
+                {
+                case DBusMessageType.ERROR:
+                    warning("Received error:\n%s", message.print(2));
+                    return null;
+                default:
+                    return message;
+                }
+            }
+
             NotifyCall? call = VariantToNotifyCall(message.get_body());
 
             if (call == null)
@@ -45,7 +53,7 @@ namespace SpotifyHook
                 return null;
             }
 
-            OnNotification(connection, call, message);
+            OnNotification.begin(connection, call, message);
             return null;
         }
     }

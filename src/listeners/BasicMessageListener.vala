@@ -1,6 +1,6 @@
 using GLib;
 
-namespace SpotifyHook
+namespace SpotifyHook.Listeners
 {
     public class BasicMessageListener : MessageListener
     {

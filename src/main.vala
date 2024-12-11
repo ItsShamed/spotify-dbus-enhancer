@@ -1,9 +1,11 @@
 using SpotifyHook;
+using SpotifyHook.Foreign;
+using SpotifyHook.Listeners;
 
 static void main()
 {
     MainLoop loop = new MainLoop();
-    var listener = new BasicNotificationListener("Spotify");
+    var listener = new SpotifyNotificationListener();
     info("Hello world!");
     listener.start.begin(null, (obj, res) => {
         try

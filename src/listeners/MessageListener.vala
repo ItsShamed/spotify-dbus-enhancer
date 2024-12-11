@@ -1,6 +1,7 @@
 using GLib;
+using SpotifyHook;
 
-namespace SpotifyHook
+namespace SpotifyHook.Listeners
 {
     public abstract class MessageListener : SessionBusAdapter
     {

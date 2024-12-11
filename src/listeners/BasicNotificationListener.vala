@@ -1,6 +1,7 @@
 using GLib;
+using SpotifyHook.Domain;
 
-namespace SpotifyHook
+namespace SpotifyHook.Listeners
 {
     public class BasicNotificationListener : NotificationListener
     {
@@ -9,7 +10,7 @@ namespace SpotifyHook
             base(appName);
         }
 
-        protected override void OnNotification(
+        protected override async void OnNotification(
             DBusConnection connection, NotifyCall parameters,
             owned DBusMessage rawMessage)
         {

@@ -1,6 +1,6 @@
 using GLib;
 
-namespace SpotifyHook
+namespace SpotifyHook.Domain
 {
     public struct NotifyCall
     {
@@ -10,7 +10,7 @@ namespace SpotifyHook
         public string Summary;
         public string Body;
         public (unowned string)[] Actions;
-        public Variant Hints;
+        public HashTable<string, Variant> Hints;
         public int ExpireTimeout;
     }
 
@@ -28,6 +28,24 @@ namespace SpotifyHook
             return null;
         }
 
+        if (variant.n_children() < 8)
+        {
+            debug("Variant does not have the right number of children??");
+            return null;
+        }
+
+        Variant hintsVariant = variant.get_child_value(6);
+        VariantIter hintsIter = hintsVariant.iterator();
+
+        string? key = null;
+        Variant? val = null;
+
+        HashTable<string, Variant> hints =
+            new HashTable<string, Variant>(str_hash, str_equal);
+
+        while (hintsIter.next("{sv}", out key, out val))
+            hints.insert(key, val);
+
         NotifyCall call = {
             AppName: VariantUtils.GetChildString(variant, 0),
             ReplacesId: VariantUtils.GetChildUint32(variant, 1),
@@ -35,7 +53,7 @@ namespace SpotifyHook
             Summary: VariantUtils.GetChildString(variant, 3),
             Body: VariantUtils.GetChildString(variant, 4),
             Actions: VariantUtils.GetChildStrv(variant, 5),
-            Hints: variant.get_child_value(6),
+            Hints: hints,
             ExpireTimeout: VariantUtils.GetChildInt32(variant, 7)
         };
         return call;
