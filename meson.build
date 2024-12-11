@@ -15,4 +15,4 @@ output = find_result.stdout().strip()
 
 sources = find_result.stdout().strip().split('\n')
 
-executable('spotify-notifix', sources, dependencies: dependencies)
+executable('spotify-notifix', sources, dependencies: dependencies, install: true)
