@@ -1,22 +1,33 @@
 # Spotify D-Bus notification Enhancer
 
-Goofy script to enhance the useless notifications sent by Spotify on Linux.
-
-Don't exepect this script to work properly tho.
+Goofy program to enhance the useless notifications sent by Spotify on Linux.
 
 ## Dependencies
 
-To be able to run this script, you need the following Python packages:
-- dbus-python
-- PyGObject
+## Building
 
-### Arch Linux
+This program is written in the Vala language, which makes interface with DBus
+much easier. This project uses Meson to compile the program.
 
-On Arch Linux, it is recommended to use `pacman` instead of `pip` to install
-Python packages. In which case you can install the dependencies like so:
+To be able to compile, you need the dependencies listed in the `meson.build`
+file, namely:
+- `glib-2.0` (base Vala requirement)
+- `gobject-2.0` (base Vala requirement)
+- `gio-2.0` (DBus interfacing)
 
-```console
-sudo pacman -S python-gobject dbus-python
+Then prepare the meson project:
+
+```sh
+meson setup build
+```
+
+> [!TIP]
+> Use the `--buildtype=release` to build in release mode
+
+Then compile:
+
+```
+meson compile -C build
 ```
 
 ### Nix / NixOS
@@ -28,7 +39,7 @@ Manager module.
 #### Flakes
 
 Add this repo to your flake inputs and either add import the module or add
-the script to your packages.
+the program to your packages.
 
 <sub>`flake.nix`</sub>
 ```nix
@@ -97,5 +108,5 @@ in
 
 # License
 
-This software is licensed under the *"Do What The F*ck You Want"* public license.
-See the [LICENSE](/license) file to learn more.
+This software is licensed under the MIT license.
+See the [LICENSE](/LICENSE) file to learn more.
