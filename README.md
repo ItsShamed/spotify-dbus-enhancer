@@ -4,7 +4,7 @@ Goofy program to enhance the useless notifications sent by Spotify on Linux.
 
 ## Dependencies
 
-## Building
+### Building manually
 
 This program is written in the Vala language, which makes interface with DBus
 much easier. This project uses Meson to compile the program.
