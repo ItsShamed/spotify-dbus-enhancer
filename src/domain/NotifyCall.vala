@@ -22,7 +22,7 @@ namespace SpotifyHook.Domain
             return null;
         }
 
-        if (!Variant.is_signature("(susssasa{sv}i)"))
+        if (!variant.is_of_type(new VariantType("(susssasa{sv}i)")))
         {
             debug("Variant does not respect NotifyCall signature");
             return null;
