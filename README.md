@@ -106,7 +106,31 @@ in
 }
 ```
 
-# License
+## How does it works?
+
+The programs listens on a D-Bus Session Bus for method calls to
+`org.freedesktop.Notifications.Notify`, and only matches notifications which
+have the appname "Spotify".
+
+Once a notification is matched, the program will check on Spotify's MPris
+instance to get all necessary metadata. It will then edit the matched
+notification with better formatting, and resend the call with the same
+`replaces_id` parameter, which will flawlessly replace the notification.
+
+## History
+
+This used to be a simple Python script that used the `dbus-python` and
+`PyGObject` librairies. But at that time I didn't knew much about how D-Bus
+worked and juste copy-pasted code from the Internet.
+
+On top of that due to how poor it was written (and beacause it's Python),
+the filter would take too long to process and resend the notification to the
+point where you would actually see the notification being edited live.
+
+Since `27c1443c`, this has been rewritten in Vala, because it's a GLib and D-Bus
+oriented language that fits much more for this purpose.
+
+## License
 
 This software is licensed under the MIT license.
 See the [LICENSE](/LICENSE) file to learn more.
