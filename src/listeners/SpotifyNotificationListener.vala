@@ -40,7 +40,7 @@ namespace SpotifyHook.Listeners
             string artist = string.joinv(", ",
                 metadata["xesam:artist"].get_strv());
             string albumArtist = string.joinv(", ",
-                metadata["xesam:artist"].get_strv());
+                metadata["xesam:albumArtist"].get_strv());
             string album = metadata["xesam:album"].get_string();
             string title = metadata["xesam:title"].get_string();
 
