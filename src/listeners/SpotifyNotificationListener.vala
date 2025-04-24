@@ -13,15 +13,11 @@ namespace SpotifyHook.Listeners
         private Thread<void> m_spotifyThread;
         private Thread<void> m_dequeueThread;
         private Cancellable m_threadCancellable = new Cancellable();
-        private AsyncQueue<NotifyCall?> m_notifyQueue =
-            new AsyncQueue<NotifyCall?>();
 
         public SpotifyNotificationListener()
         {
             base("Spotify");
             initForeignInterfaces.begin();
-            m_dequeueThread =
-                new Thread<void>("notify-dequeue", waitForNotifyQueue);
         }
 
         protected override async void OnNotification(
@@ -50,15 +46,9 @@ namespace SpotifyHook.Listeners
                 @"$artist - $title\nfrom <i>$album</i>\nby <u><i>$albumArtist</i></u>";
             parameters.ExpireTimeout = 5000;
 
-            queueNotify(parameters);
+            sendNotify.begin(parameters);
 
             debug("ok");
-        }
-
-        private void queueNotify(NotifyCall notify)
-        {
-            debug("Pushing notify call");
-            m_notifyQueue.push(notify);
         }
 
         private async void sendNotify(NotifyCall notify)
@@ -83,27 +73,16 @@ namespace SpotifyHook.Listeners
             }
         }
 
-        private void waitForNotifyQueue()
-        {
-            while (!m_threadCancellable.is_cancelled())
-            {
-                Thread.yield();
-                debug("Popping notify queue (will block)");
-                NotifyCall notify = m_notifyQueue.pop();
-                debug("Sending queued notification with replace id %u",
-                    notify.ReplacesId);
-                sendNotify.begin(notify);
-                Thread.yield();
-                Thread.usleep(1000);
-            }
-        }
-
         private void listenForSpotify()
         {
             while (!m_threadCancellable.is_cancelled())
             {
                 if (m_spotify != null)
+                {
+                    Thread.yield();
+                    Thread.usleep(1000);
                     continue;
+                }
                 debug("Trying to get player proxy bus object");
                 try
                 {
