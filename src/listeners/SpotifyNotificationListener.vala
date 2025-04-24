@@ -11,7 +11,6 @@ namespace SpotifyHook.Listeners
         private INotifications? m_notifications = null;
         private IPlayer? m_spotify = null;
         private Thread<void> m_spotifyThread;
-        private Thread<void> m_dequeueThread;
         private Cancellable m_threadCancellable = new Cancellable();
 
         public SpotifyNotificationListener()
@@ -46,7 +45,10 @@ namespace SpotifyHook.Listeners
                 @"$artist - $title\nfrom <i>$album</i>\nby <u><i>$albumArtist</i></u>";
             parameters.ExpireTimeout = 5000;
 
-            sendNotify.begin(parameters);
+            new Thread<void>("notification-send", () => {
+                sendNotify.begin(parameters);
+            });
+
 
             debug("ok");
         }
@@ -139,7 +141,6 @@ namespace SpotifyHook.Listeners
         {
             m_threadCancellable.cancel();
             m_spotifyThread.join();
-            m_dequeueThread.join();
             base.dispose();
         }
     }
